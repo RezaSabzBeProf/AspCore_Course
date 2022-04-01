@@ -1,0 +1,9 @@
+﻿@using AspCore_Course.Models
+@model Post
+
+<h2>@Model.Title</h2>
+<p>@Model.ShortDesc</p>
+<form asp-action="DeletePost1" method="post">
+    <input name="deleteid" type="hidden" value="@Model.Id"/>
+   <input type="submit" class="btn btn-danger"/>
+</form>
