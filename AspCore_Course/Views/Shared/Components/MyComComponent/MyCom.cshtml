@@ -1,0 +1,7 @@
+﻿@using AspCore_Course.Models
+@model List<Post>
+
+    @foreach(var item in Model)
+{
+    <h4>@item.CreateDate</h4>
+}

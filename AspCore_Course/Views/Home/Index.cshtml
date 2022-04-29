@@ -1,8 +1,25 @@
-﻿@{
+﻿@using AspCore_Course.Models
+@using AspCore_Course.Service.Interface
+@{
     ViewData["Title"] = "Home Page";
+    List<Post> posts = ViewBag.model as List<Post>;
 }
-
+@inject IPostService _postService;
+@{
+    var model = _postService.GetPosts();
+}
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+@foreach(var item in posts)
+{
+    <h3>@item.Title</h3>
+}
+<hr />
+@foreach(var item in model)
+{
+    <h4>@item.ShortDesc</h4>
+}
+<hr />
+@await Component.InvokeAsync("MyComComponent");

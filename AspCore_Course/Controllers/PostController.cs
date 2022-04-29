@@ -1,6 +1,8 @@
 ﻿using AspCore_Course.Models;
 using AspCore_Course.Service.Interface;
+using Ganss.XSS;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AspCore_Course.Controllers
 {
@@ -21,10 +23,19 @@ namespace AspCore_Course.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult CreatePost(Post post)
+        public IActionResult CreatePost(Post post,IFormFile imagePost)
         {
+            post.FilePath = TopCoderZ.Core.Generator.NameGenerator.GenerateUniqCode() + Path.GetExtension(imagePost.FileName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/image", post.FilePath);
+            using(var stream = new FileStream(filePath,FileMode.Create))
+            {
+                imagePost.CopyTo(stream);
+            }
             post.CreateDate = DateTime.Now;
-            post.UserId = 1;
+            post.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var htmlSan = new HtmlSanitizer();
+            string safeBody = htmlSan.Sanitize(post.Body);
+            post.Body = safeBody;
             _postService.AddPost(post);
             return RedirectToAction("index");
         }
@@ -48,12 +59,18 @@ namespace AspCore_Course.Controllers
         [HttpPost]
         public IActionResult EditPost(Post post)
         {
+            var htmlSan = new HtmlSanitizer();
+            post.Body = htmlSan.Sanitize(post.Body);
             _postService.EditPost(post);
             return RedirectToAction("index");
         }
         public IActionResult ShowPost(int id)
         {
             var model = _postService.GetPost(id);
+            if(model == null)
+            {
+                return NotFound();
+            }
             return View(model);
         }
 

@@ -19,5 +19,7 @@ namespace AspCore_Course.Models
 
         public User? User { get; set; }
 
+        public string FilePath { get; set; }
+
     }
 }

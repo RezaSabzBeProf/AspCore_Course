@@ -14,5 +14,13 @@ namespace AspCore_Course.Models
         public string? Password { get; set; }
 
         public DateTime CreateDate { get; set; } = DateTime.Now;
+
+        public UserRole Role { get; set; }
+    }
+    public enum UserRole
+    {
+        NormalUser,
+        Writer,
+        Admin
     }
 }
